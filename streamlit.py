@@ -2,10 +2,9 @@ import streamlit as st
 from simplify import simplify_text
 from explain_terms import explain_terms
 from question_gen import question_gen, question_answers
-
+from example_text import example_text
 
 st.set_page_config(layout="centered")
-
 
 st.title(""" Reading Companion """)
 
@@ -25,34 +24,31 @@ st.image("cover_image2.png")
 
 with st.expander("💡 See Example"):
     st.subheader("Example")
-    st.write("Try to read and understand this scientific paper:")
-    st.write("...")
-    st.subheader("Example: Climate Change")
-    example_text = """Anthropogenic greenhouse gas emissions have led to a radiative forcing imbalance in the Earth’s climate system, resulting in global warming and associated climatic changes."""
+    st.write("Try to read and understand this extract from a scientific paper:") 
+    st.write(example_text)
+    url = "https://link.springer.com/article/10.1186/s12978-024-01797-y"
+    st.write("Link to research paper: [Vitamin D and Reproductive Disorders](%s)" % url)
+    st.subheader("Now use our tools:")
     
     if st.button("Reading Companion Test"):
         with st.spinner("Simplifying..."):
             simplified = simplify_text(example_text)
-            st.markdown(f"**Original:** {example_text}")
             st.markdown(f"**Simplified:** {simplified}")
 
     if st.button("Key defintions"):
         with st.spinner("Dictionary..."):
             dictionary = explain_terms(example_text)
-            st.markdown(f"**Original:** {example_text}")
             st.markdown(f"**Key terms and Defintions:** \n {dictionary}")
 
     if st.button("Test Myself"):
         with st.spinner("Generating Questions..."):
             questions_output = question_gen(example_text)
-            st.markdown(f"**Original:** {example_text}")
             st.markdown(f"**Questions to check your understanding:** \n {questions_output}") 
         
         print(question_gen)
 
         with st.expander("💡 See Answers"):  
             question_answers_output = question_answers(questions_output)
-            print(question_answers_output)
             st.markdown(f"**Answers:** \n {question_answers_output}")
 
 
@@ -61,3 +57,6 @@ with st.expander("🛠️ Use Now"):
     user_input = st.text_area("Paste your article or paragraph below:")
     if st.button("Reading Companion"):
         st.write("🔄 Running AI model... (Coming soon!)")
+
+with st.expander("See our Monthly Top Picks"):
+    st.subheader("3 Research papers made simple, for real news: ")

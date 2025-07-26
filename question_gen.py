@@ -34,7 +34,6 @@ def question_answers(input_text):
             temperature=0.7,
             max_tokens=400
         )
-        print(response.choices[0].message.content.strip())
         return response.choices[0].message.content.strip()
     except Exception as e:
         return f"⚠️ Error: {e}"   
