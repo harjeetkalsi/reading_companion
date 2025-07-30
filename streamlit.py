@@ -54,7 +54,6 @@ def display_tools(user_input, section):
             st.markdown(f"**Answers:** \n {question_answers_output}")
 
 
-
 with st.expander("💡 See Example"):
     st.subheader("Example")
     st.write("Try to read and understand this extract from a scientific paper:") 
@@ -67,7 +66,6 @@ with st.expander("💡 See Example"):
 
 
 with st.expander("🛠️ Use Now"):
-    
     st.subheader("Try It Yourself")
     user_input = st.text_area("Paste your paragraph below or provide the web link:")
     
@@ -87,7 +85,6 @@ with st.expander("🛠️ Use Now"):
             for page in doc:
                 user_input += page.get_text()
 
-        
     st.write("")
 
     display_tools(user_input, "use_now")
