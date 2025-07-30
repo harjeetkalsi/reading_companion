@@ -41,12 +41,12 @@ def display_tools(user_input, section):
 
     if middle.button("Key defintions", icon="🔍", use_container_width=True, key=(section + "2")):
         with st.spinner("Dictionary..."):
-            dictionary = explain_terms(example_text)
+            dictionary = explain_terms(user_input)
             st.markdown(f"**Key terms and Defintions:** \n {dictionary}")
 
     if right.button("Generate Questions", icon="📝", use_container_width=True, key=(section + "3")):
        with st.spinner("Generating Questions..."):
-            questions_output = question_gen(example_text)
+            questions_output = question_gen(user_input)
             st.markdown(f"**Questions to check your understanding:** \n {questions_output}") 
         
        with st.expander("💡 See Answers"):  
