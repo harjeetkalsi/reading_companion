@@ -6,6 +6,11 @@ load_dotenv()
 
 client = OpenAI()
 
+def validate_length(user_input, max_words):
+    if len(user_input.split()) > max_words:
+        return ' '.join(user_input.split()[:max_words])
+    else: 
+        return user_input
 
 def simplify_text(input_text):
     try:
@@ -13,7 +18,7 @@ def simplify_text(input_text):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are an assistant that rewrites academic or technical text into simpler, plain English."},
-                {"role": "user", "content": f"Simplify the following text for a 10-year-old reader:\n\n{input_text}"}
+                {"role": "user", "content": f"Simplify the following text for a 10-year-old reader in less than 500 words:\n\n{input_text}"}
             ],
             temperature=0.7,
             max_tokens=400
@@ -21,3 +26,18 @@ def simplify_text(input_text):
         return response.choices[0].message.content.strip()
     except Exception as e:
         return f"⚠️ Error: {e}"
+    
+def simplify_from_urls(url):
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4.1",
+            messages=[
+                {"role": "system", "content": "You are an assistant that rewrites academic or technical text into simpler, plain English."},
+                {"role": "user", "content": f"Simplify the following article/text for a 10-year-old reader from this url, if there is more than one url go through each one systematically read and simplify:\n\n{url}"}
+            ],
+            temperature=0.7,
+            max_tokens=400
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"⚠️ Error: {e}" 

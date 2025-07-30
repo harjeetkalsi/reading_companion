@@ -24,7 +24,6 @@ def question_gen(input_text):
     
 def question_answers(input_text):
     try:
-        print("here")
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
