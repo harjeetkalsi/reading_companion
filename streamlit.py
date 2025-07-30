@@ -31,11 +31,16 @@ def display_tools(user_input, section):
    
     if left.button("Reading Companion", icon="📘", use_container_width=True, key=(section + "1")):
         with st.spinner("Simplifying..."):
-            # user_input = validate_length(user_input, 5000)
-            # if len(urls) >=1: 
-            #     simplified = simplify_from_urls(urls)  
-            # else: 
-            simplified = simplify_text(user_input)
+            
+            # Checking if the user input has any urls
+            extractor = URLExtract()
+            urls = extractor.find_urls(user_input)
+
+            if len(urls) >=1: 
+                simplified = simplify_from_urls(urls)  
+            else: 
+                user_input = validate_length(user_input, 5000)
+                simplified = simplify_text(user_input)
 
             st.markdown(f"**Simplified:** {simplified}") 
 
@@ -68,11 +73,6 @@ with st.expander("💡 See Example"):
 with st.expander("🛠️ Use Now"):
     st.subheader("Try It Yourself")
     user_input = st.text_area("Paste your paragraph below or provide the web link:")
-    
-    # Checking if the user input has any urls
-    extractor = URLExtract()
-    urls = extractor.find_urls(user_input)
-    print(urls)
     
     # Allowing for a file to be uploaded instead 
     st.write("or")
