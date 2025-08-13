@@ -87,11 +87,13 @@ def extract_main_text(url: str) -> str:
     # Fast path
     text = extract_main_text_trafilatura(url)
     if text:
+        print("fast")
         return text
 
     # Fallback
     text = extract_main_text_selenium(url)
     if text:
+        print("selenium")
         return text
 
     return "Sorry — I couldn't extract readable article text from that link."
