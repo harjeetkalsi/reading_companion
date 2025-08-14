@@ -6,9 +6,14 @@ from question_gen import question_gen, question_answers
 from example_text import example_text
 from urlextract import URLExtract
 import fitz  
+from st_social_media_links import SocialMediaIcons
+
 
 
 st.set_page_config(layout="centered")
+
+
+# Header / Site Introduction
 
 st.title(""" Reading Companion """)
 
@@ -26,6 +31,7 @@ Whether you're a student, curious learner, or just tired of misinformation, the 
 
 st.image("new_cover_image.png")
 
+# Tools
 def display_tools(user_input, section): 
     
     left, middle, right = st.columns(3)
@@ -61,6 +67,8 @@ def display_tools(user_input, section):
             st.markdown(f"**Answers:** \n {question_answers_output}")
 
 
+# Main Section/ Expanders
+
 with st.expander("💡 See Example"):
     st.subheader("Example")
     st.write("Try to read and understand this extract from a scientific paper:") 
@@ -92,7 +100,7 @@ with st.expander("🛠️ Use Now"):
     display_tools(user_input, "use_now")
      
 
-with st.expander("See our Monthly Top Picks"):
+with st.expander("🌟 See our Monthly Top Picks"):
     st.subheader("3 Research papers made simple, for real news: ")
     st.write("""Every month, we handpick 3 research papers we find fascinating covering areas like health, science, psychology, economics, and technology.
 
@@ -103,3 +111,36 @@ We often end up reading more 'fake news' in our curated feeds than real research
 🗓️ New articles drop on the 1st of every month.
              
 📚 Whether you're unsure where to begin or not used to reading journals, we've got you covered.""")
+    
+
+with st.expander("🔎 Where to search for Research?"):
+    st.subheader("Tired of fake news and sensational headlines? Go straight to the source. Here are three excellent **free** places to find research papers:")
+    st.markdown("""
+1. **[Google Scholar](https://scholar.google.com/)** — The best all-round academic search engine.  
+   *Tips:* Use **“Cited by”** to find influential follow-ups, click **“All versions”** for free PDFs, and add filters by year.
+
+2. **[PubMed](https://pubmed.ncbi.nlm.nih.gov/)** — The go-to for medicine, biology, and public health.  
+   *Tips:* Turn on the **“Free full text”** filter to surface open-access articles immediately.
+
+3. **[arXiv](https://arxiv.org/)** — Open preprints for physics, computer science, mathematics and more.  
+   *Note:* Preprints are often **not yet peer-reviewed**, but they’re fast and freely available.
+
+**Pro tips for better results**
+- Add keywords like **review**, **systematic review**, or **meta-analysis** to find high-level summaries.  
+- Try advanced search tricks: **"exact phrase"**, **site:edu**, or **filetype:pdf**.  
+- If you hit a paywall, look for **“All versions”** on Scholar, check the author’s homepage, or search the **paper title + PDF**.
+""")
+
+# Footer
+
+st.subheader("""Thank you for Visiting! Follow Us On Our Platforms:""")
+
+social_media_links = [
+    "https://www.instagram.com/ThisIsAnExampleLink",
+    "https://www.facebook.com/ThisIsAnExampleLink",
+    "https://www.youtube.com/ThisIsAnExampleLink",
+    "https://www.github.com/jlnetosci/st-social-media-links",
+]
+
+social_media_icons = SocialMediaIcons(social_media_links)
+social_media_icons.render(justify_content="start")
