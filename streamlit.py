@@ -29,7 +29,7 @@ With this tool you can provide any article or journal extract, and it will:
 Whether you're a student, curious learner, or just tired of misinformation, the Reading Companion helps you understand research!
 """)
 
-st.image("new_cover_image.png")
+st.image("imgs/new_cover_image.png")
 
 # Tools
 def display_tools(user_input, section): 
