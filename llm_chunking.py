@@ -9,7 +9,7 @@ MODEL = "gpt-3.5-turbo"
 CHUNK_TOKENS = 3000       # per-chunk input budget (prompt+chunk should fit model context)
 CHUNK_OVERLAP_SENTS = 2   # small sentence overlap to keep continuity
 OUTPUT_TOKENS_PER_CHUNK = 400  # cap responses
-FINAL_SUMMARY_TOKENS = 300     # cap final summary length
+FINAL_SUMMARY_TOKENS = 1500     # cap final summary length
 
 load_dotenv()
 
@@ -94,7 +94,7 @@ def chunk_by_tokens_with_sentence_bounds(
     return chunks
 
 
-def simplify_chunk(chunk_text: str, audience: str = "15-year-old") -> str:
+def simplify_chunk(chunk_text: str, audience: str = "10-year-old") -> str:
     """Simplify a single chunk."""
     sys = (
         "You simplify academic or technical text into clear, plain English while keeping key facts. "
@@ -119,16 +119,16 @@ def simplify_chunk(chunk_text: str, audience: str = "15-year-old") -> str:
     return resp.choices[0].message.content.strip()
 
 
-def reduce_summary(simplified_chunks: List[str], target_words: int = 180) -> str:
+def reduce_summary(simplified_chunks: List[str], target_words: int = 500) -> str:
     """Create a short overall summary from the simplified parts."""
     combined = "\n\n".join(simplified_chunks)
     # If this combined text is huge, you can re-chunk again here; for most cases it's fine.
     sys = (
         "You are a precise summarizer. Produce a concise overview that captures the central question, "
-        "methods (if present), key findings, and implications. Write for a 15-year-old reader."
+        "methods (if present), key findings, and implications. Write for a 10-year-old reader."
     )
     user = (
-        f"Create a short overall summary (~{target_words} words) of the following simplified notes:\n\n{combined}"
+        f"Create a short overall summary of {target_words} words (no less) of the following simplified notes:\n\n{combined}"
     )
     resp = client.chat.completions.create(
         model=MODEL,
@@ -144,7 +144,7 @@ def reduce_summary(simplified_chunks: List[str], target_words: int = 180) -> str
 
 def simplify_long_text_with_summary(
     text: str,
-    audience: str = "15-year-old",
+    audience: str = "10-year-old",
     model: str = MODEL,
     chunk_tokens: int = CHUNK_TOKENS
 ) -> Tuple[str, str, List[str]]:
@@ -161,5 +161,5 @@ def simplify_long_text_with_summary(
         simplified_parts.append(f"## Part {i}\n{simplified}")
 
     combined_simplified = "\n\n".join(simplified_parts)
-    overall = reduce_summary(simplified_parts, target_words=180)
+    overall = reduce_summary(simplified_parts, target_words=500)
     return (overall, combined_simplified, simplified_parts)
