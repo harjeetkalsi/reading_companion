@@ -1,13 +1,15 @@
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import streamlit as st
-from simplify import simplify_text, validate_length
-from text_from_url import extract_main_text
-from explain_terms import explain_terms
-from question_gen import question_gen, question_answers
-from example_text import example_text
+from core.nlp.simplify import simplify_text
+from core.scraping.text_from_url import extract_main_text
+from core.nlp.explain_terms import explain_terms
+from core.nlp.question_gen import question_gen, question_answers
+from core.data.example_text import example_text
 from urlextract import URLExtract
 import fitz  
 from st_social_media_links import SocialMediaIcons
-from llm_chunking import token_count, simplify_long_text_with_summary
+from core.nlp.llm_chunking import token_count, simplify_long_text_with_summary
 
 
 st.set_page_config(layout="centered")
@@ -36,7 +38,7 @@ With this tool you can provide any article or journal extract, and it will:
 Whether you're a student, curious learner, or just tired of misinformation, the Reading Companion helps you understand research!
 """)
 
-st.image("imgs/new_cover_image.png")
+st.image("app/imgs/new_cover_image.png")
 
 # Tools
 def display_tools(user_input, section): 

@@ -1,5 +1,5 @@
-from text_from_url import extract_main_text
-from llm_chunking import simplify_long_text_with_summary
+from core.scraping.text_from_url import extract_main_text
+from core.nlp.llm_chunking import simplify_long_text_with_summary
 
 
 if __name__ == "__main__":
