@@ -7,7 +7,7 @@ from example_text import example_text
 from urlextract import URLExtract
 import fitz  
 from st_social_media_links import SocialMediaIcons
-
+from llm_chunking import token_count, simplify_long_text_with_summary
 
 
 st.set_page_config(layout="centered")
@@ -44,16 +44,28 @@ def display_tools(user_input, section):
             urls = extractor.find_urls(user_input)
 
             if len(urls) >=1:
+                st.write("Extracting text from the link you provided!")
                 for url in urls: 
                     user_input += extract_main_text(url)  
             
-            user_input = validate_length(user_input, 5000)
-            simplified = simplify_text(user_input)
-
-            st.markdown(f"**Simplified:** {simplified}") 
+            if token_count(user_input) <= 3000:
+            # send directly, no chunking
+                simplified = simplify_text(user_input)
+                st.markdown(f"**Simplified:** {simplified}")
+            else:
+            # do chunking
+                st.write("That was a lot of text, so we are using our intelligent chunking system! Hang on...")
+                overall, combined, parts = simplify_long_text_with_summary(user_input)
+                
+                st.markdown(f"**Simplifed Chunks:** {parts}") 
+                st.markdown(" ") 
+                st.markdown(f"**Overall Summary:** {overall}") 
+                user_input = combined
 
     if middle.button("Key defintions", icon="🔍", use_container_width=True, key=(section + "2")):
         with st.spinner("Dictionary..."):
+            print(user_input)
+            print(combined)
             dictionary = explain_terms(user_input)
             st.markdown(f"**Key terms and Defintions:** \n {dictionary}")
 

@@ -97,12 +97,12 @@ def chunk_by_tokens_with_sentence_bounds(
 def simplify_chunk(chunk_text: str, audience: str = "10-year-old") -> str:
     """Simplify a single chunk."""
     sys = (
-        "You simplify academic or technical text into clear, plain English while keeping key facts. "
+        "You simplify/rewrite academic or technical text into clear, simpler, plain English while keeping key facts. "
         "Write for a {aud} reader. Keep definitions for jargon, and use short paragraphs or bullet points when helpful."
     ).format(aud=audience)
 
     user = (
-        "Simplify the following text. Keep key claims, definitions, and numbers. "
+        "Simplify the following text for a {aud} reader. Keep key claims, definitions, and numbers. "
         "Avoid losing nuance. If there are sections, preserve their headings.\n\n"
         f"{chunk_text}"
     )
