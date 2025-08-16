@@ -12,6 +12,13 @@ from llm_chunking import token_count, simplify_long_text_with_summary
 
 st.set_page_config(layout="centered")
 
+# Streamlit button click reruns script top to bottom, allow for persistance 
+def _ensure_state(section: str):
+    st.session_state.setdefault(f"{section}_processed", None)
+    st.session_state.setdefault(f"{section}_simplified", None)
+    st.session_state.setdefault(f"{section}_overall", None)
+    st.session_state.setdefault(f"{section}_questions", None)
+    st.session_state.setdefault(f"{section}_answers", None)
 
 # Header / Site Introduction
 
@@ -34,49 +41,84 @@ st.image("imgs/new_cover_image.png")
 # Tools
 def display_tools(user_input, section): 
     
+    _ensure_state(section)
+
     left, middle, right = st.columns(3)
    
     if left.button("Reading Companion", icon="📘", use_container_width=True, key=(section + "1")):
         with st.spinner("Simplifying..."):
             
-            # Checking if the user input has any urls
+            # Decide the source text to simplify (raw text or fetched from URL)
+            source_text = user_input or ""
             extractor = URLExtract()
-            urls = extractor.find_urls(user_input)
+            urls = extractor.find_urls(source_text)
 
             if len(urls) >=1:
                 st.write("Extracting text from the link you provided!")
+                fetched = []
                 for url in urls: 
-                    user_input += extract_main_text(url)  
+                    try: 
+                        fetched.append(extract_main_text(url))
+                    except Exception as e: 
+                        st.warning(f"Couldn’t extract from {url}: {e}") 
+
+                source_text = "\n\n".join([t for t in fetched if t]) or source_text           
             
-            if token_count(user_input) <= 3000:
+            if not source_text.strip():
+                st.warning("Please paste text or provide a valid link first.")
+                return
+            
+
+            # Simplify (direct or chunked) and store a *processed* version for later buttons
+            
+            
+            if token_count(source_text) <= 3000:
             # send directly, no chunking
-                simplified = simplify_text(user_input)
+                simplified = simplify_text(source_text)
+                st.session_state[f"{section}_simplified"] = simplified
+                st.session_state[f"{section}_overall"] = None
+                st.session_state[f"{section}_processed"] = simplified  # <-- what Key Definitions/Questions will use
                 st.markdown(f"**Simplified:** {simplified}")
             else:
             # do chunking
                 st.write("That was a lot of text, so we are using our intelligent chunking system! Hang on...")
-                overall, combined, parts = simplify_long_text_with_summary(user_input)
+                overall, combined, parts = simplify_long_text_with_summary(source_text)
                 
-                st.markdown(f"**Simplifed Chunks:** {parts}") 
+                # Store for later steps
+                st.session_state[f"{section}_simplified"] = combined
+                st.session_state[f"{section}_overall"] = overall
+                st.session_state[f"{section}_processed"] = combined  # <-- downstream source
+
+                st.markdown(f"**Overall Summary** {overall}") 
                 st.markdown(" ") 
-                st.markdown(f"**Overall Summary:** {overall}") 
-                user_input = combined
+                st.markdown(f"**Simplified (All Chunks):** {combined}") 
+                
 
     if middle.button("Key defintions", icon="🔍", use_container_width=True, key=(section + "2")):
-        with st.spinner("Dictionary..."):
-            print(user_input)
-            print(combined)
-            dictionary = explain_terms(user_input)
-            st.markdown(f"**Key terms and Defintions:** \n {dictionary}")
+        with st.spinner("Finding key terms..."):
+            src = st.session_state.get(f"{section}_processed") or user_input
+            if not src or not src.strip():
+                st.warning("Please run 📘 Reading Companion first, or paste text.")
+            else:    
+                dictionary = explain_terms(src)
+                st.markdown(f"**Key terms and Defintions:** \n {dictionary}")
+
 
     if right.button("Generate Questions", icon="📝", use_container_width=True, key=(section + "3")):
        with st.spinner("Generating Questions..."):
-            questions_output = question_gen(user_input)
-            st.markdown(f"**Questions to check your understanding:** \n {questions_output}") 
+            src = st.session_state.get(f"{section}_processed") or user_input
+            if not src or not src.strip():
+                st.warning("Please run 📘 Reading Companion first, or paste text.")
+            else: 
+                questions = question_gen(user_input)
+                st.session_state[f"{section}_questions"] = questions
+                st.session_state[f"{section}_answers"] = None  # reset answers
+                st.markdown(f"**Questions to check your understanding:** \n {questions}") 
         
        with st.expander("💡 See Answers"):  
-            question_answers_output = question_answers(questions_output)
-            st.markdown(f"**Answers:** \n {question_answers_output}")
+            answers = question_answers(questions)
+            st.markdown(f"**Answers:** \n {answers}")
+            st.session_state[f"{section}_answers"] = answers
 
 
 # Main Section/ Expanders
@@ -94,7 +136,7 @@ with st.expander("💡 See Example"):
 
 with st.expander("🛠️ Use Now"):
     st.subheader("Try It Yourself")
-    user_input = st.text_area("Paste your paragraph below or provide the web link:")
+    user_input = st.text_area("Paste your paragraph below or provide the web link or upload a pdf:")
     
     # Allowing for a file to be uploaded instead 
     st.write("or")
