@@ -21,6 +21,7 @@ def _ensure_state(section: str):
     st.session_state.setdefault(f"{section}_overall", None)
     st.session_state.setdefault(f"{section}_questions", None)
     st.session_state.setdefault(f"{section}_answers", None)
+    st.session_state.setdefault("uploaded_file", None)
 
 # Header / Site Introduction
 
@@ -52,22 +53,24 @@ def display_tools(user_input, section):
             
             # Decide the source text to simplify (raw text or fetched from URL)
             source_text = user_input or ""
-            extractor = URLExtract()
-            urls = extractor.find_urls(source_text)
+            
+            if st.session_state.get("uploaded_file") == False: 
+                extractor = URLExtract()
+                urls = extractor.find_urls(source_text)
 
-            if len(urls) >=1:
-                st.write("Extracting text from the link you provided!")
-                fetched = []
-                for url in urls: 
-                    try: 
-                        fetched.append(extract_main_text(url))
-                    except Exception as e: 
-                        st.warning(f"Couldn’t extract from {url}: {e}") 
+                if len(urls) >=1:
+                    st.write("Extracting text from the link you provided!")
+                    fetched = []
+                    for url in urls: 
+                        try: 
+                            fetched.append(extract_main_text(url))
+                        except Exception as e: 
+                            st.warning(f"Couldn’t extract from {url}: {e}") 
 
-                source_text = "\n\n".join([t for t in fetched if t]) or source_text           
+                    source_text = "\n\n".join([t for t in fetched if t]) or source_text           
             
             if not source_text.strip():
-                st.warning("Please paste text or provide a valid link first.")
+                st.warning("Please upload pdf, paste text or provide a valid link first.")
                 return
             
 
@@ -112,7 +115,7 @@ def display_tools(user_input, section):
             if not src or not src.strip():
                 st.warning("Please run 📘 Reading Companion first, or paste text.")
             else: 
-                questions = question_gen(user_input)
+                questions = question_gen(src)
                 st.session_state[f"{section}_questions"] = questions
                 st.session_state[f"{section}_answers"] = None  # reset answers
                 st.markdown(f"**Questions to check your understanding:** \n {questions}") 
@@ -145,12 +148,14 @@ with st.expander("🛠️ Use Now"):
     uploaded_file = st.file_uploader("Choose a file")
     
     if uploaded_file is not None:
-
+        st.session_state["uploaded_file"] = True
         with fitz.open(stream=uploaded_file.read(), filetype="pdf") as doc:
             user_input = ""
             for page in doc:
                 user_input += page.get_text()
-
+    else: 
+        st.session_state["uploaded_file"] = False
+    
     st.write("")
 
     display_tools(user_input, "use_now")
