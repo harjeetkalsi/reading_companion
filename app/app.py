@@ -10,7 +10,7 @@ from urlextract import URLExtract
 import fitz  
 from st_social_media_links import SocialMediaIcons
 from core.nlp.llm_chunking import token_count, simplify_long_text_with_summary
-
+from core.utils.pdf_gen import data_for_pdf
 
 st.set_page_config(layout="centered")
 
@@ -95,8 +95,16 @@ def display_tools(user_input, section):
                 st.session_state[f"{section}_processed"] = combined  # <-- downstream source
 
                 st.markdown(f"**Overall Summary** {overall}") 
+                
+                st.download_button(
+                    label="Export All Simplified Chunks (PDF)",
+                    data=data_for_pdf(st.session_state[f"{section}_simplified"]),
+                    file_name="simplified.pdf",
+                    mime="application/pdf",
+                )
+                
                 st.markdown(" ") 
-                st.markdown(f"**Simplified (All Chunks):** {combined}") 
+                # st.markdown(f"**Simplified (All Chunks):** {combined}") 
                 
 
     if middle.button("Key defintions", icon="🔍", use_container_width=True, key=(section + "2")):
