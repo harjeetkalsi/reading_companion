@@ -3,6 +3,7 @@ from typing import List, Tuple
 import tiktoken
 from openai import OpenAI
 from dotenv import load_dotenv
+from core.nlp.simplify import simplify_text
 
 
 MODEL = "gpt-3.5-turbo"
@@ -58,7 +59,7 @@ def split_into_sentences(text: str) -> List[str]:
             buf = []
     if buf:
         merged.append(" ".join(buf))
-    return merged
+    return merged 
 
 
 def chunk_by_tokens_with_sentence_bounds(
@@ -123,23 +124,25 @@ def reduce_summary(simplified_chunks: List[str], target_words: int = 500) -> str
     """Create a short overall summary from the simplified parts."""
     combined = "\n\n".join(simplified_chunks)
     # If this combined text is huge, you can re-chunk again here; for most cases it's fine.
-    sys = (
-        "You are a precise summarizer. Produce a concise overview that captures the central question, "
-        "methods (if present), key findings, and implications. Write for a 10-year-old reader."
-    )
-    user = (
-        f"Create a short overall summary of {target_words} words (no less) of the following simplified notes:\n\n{combined}"
-    )
-    resp = client.chat.completions.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": sys},
-            {"role": "user", "content": user},
-        ],
-        temperature=0.3,
-        max_tokens=FINAL_SUMMARY_TOKENS,
-    )
-    return resp.choices[0].message.content.strip()
+    # sys = (
+    #     "You are a precise summarizer. Produce a concise overview that captures the central question, "
+    #     "methods (if present), key findings, and implications. Write for a 10-year-old reader."
+    # )
+    # user = (
+    #     f"Create a short overall summary of {target_words} words (no less) of the following simplified notes:\n\n{combined}"
+    # )
+    # resp = client.chat.completions.create(
+    #     model=MODEL,
+    #     messages=[
+    #         {"role": "system", "content": sys},
+    #         {"role": "user", "content": user},
+    #     ],
+    #     temperature=0.3,
+    #     max_tokens=FINAL_SUMMARY_TOKENS,
+    # )
+    # return resp.choices[0].message.content.strip()
+
+    return simplify_text(combined)
 
 
 def simplify_long_text_with_summary(
