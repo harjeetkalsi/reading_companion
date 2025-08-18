@@ -4,18 +4,18 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import simpleSplit
 
-buf = io.BytesIO()
-c = canvas.Canvas(buf, pagesize=letter)
-width, height = letter
-
-x_margin = 72
-y = height - x_margin
-line_height = 14
-font_name = "Helvetica"
-font_size = 11
-max_width = width - 2 * x_margin
-
 def data_for_pdf(data):
+
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter)
+    width, height = letter
+
+    x_margin = 72           # 1 inch
+    y = height - x_margin   # start near top
+    line_height = 14
+    font_name = "Helvetica"
+    font_size = 11
+    max_width = width - 2 * x_margin
 
     for line in data.splitlines():
         wrapped = simpleSplit(line, font_name, font_size, max_width)
