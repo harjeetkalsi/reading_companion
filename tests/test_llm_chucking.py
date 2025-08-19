@@ -152,6 +152,19 @@ def test_pipeline_map_reduce_flow(monkeypatch):
     assert "## Part 1" in combined
     assert any("## Part 2" in p or "## Part 3" in p for p in parts)
 
+def test_reduce_summary_functional_no_api(monkeypatch):
+    parts = [
+        "## Part 1\n" + ("word " * 800),
+        "## Part 2\n" + ("word " * 800),
+    ]
+    def fake_simplify_text(text):
+        # pretend “summarisation”: return first 120 words
+        words = text.split()
+        return " ".join(words[:120])
+    monkeypatch.setattr(lc, "simplify_text", fake_simplify_text)
+
+    summary = lc.reduce_summary(parts, target_words=500)
+    assert len(summary.split()) <= 130  # “shorter than input” contract
 
 ##edge cases
 
