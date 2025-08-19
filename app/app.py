@@ -11,6 +11,8 @@ import fitz
 from st_social_media_links import SocialMediaIcons
 from core.nlp.llm_chunking import token_count, simplify_long_text_with_summary
 from core.utils.pdf_gen import data_for_pdf
+from controllers import decide_source_text, simplify_flow
+
 
 st.set_page_config(layout="centered")
 
@@ -52,59 +54,38 @@ def display_tools(user_input, section):
         with st.spinner("Simplifying..."):
             
             # Decide the source text to simplify (raw text or fetched from URL)
-            source_text = user_input or ""
-            
-            if st.session_state.get("uploaded_file") == False: 
-                extractor = URLExtract()
-                urls = extractor.find_urls(source_text)
-
-                if len(urls) >=1:
-                    st.write("Extracting text from the link you provided!")
-                    fetched = []
-                    for url in urls: 
-                        try: 
-                            fetched.append(extract_main_text(url))
-                        except Exception as e: 
-                            st.warning(f"Couldn’t extract from {url}: {e}") 
-
-                    source_text = "\n\n".join([t for t in fetched if t]) or source_text           
-            
-            if not source_text.strip():
-                st.warning("Please upload pdf, paste text or provide a valid link first.")
+            source_text, warn = decide_source_text(
+                user_input=user_input,
+                uploaded_file_used=bool(st.session_state.get("uploaded_file")),
+                fetch_from_url=extract_main_text,
+            )
+            if warn:
+                st.warning(warn)
                 return
             
+            result = simplify_flow(
+                source_text=source_text,
+                token_count_fn=token_count,
+                simplify_fn=simplify_text,
+                chunked_pipeline_fn=simplify_long_text_with_summary,
+                token_budget=3000,
+            )
 
-            # Simplify (direct or chunked) and store a *processed* version for later buttons
-            
-            
-            if token_count(source_text) <= 3000:
-            # send directly, no chunking
-                simplified = simplify_text(source_text)
-                st.session_state[f"{section}_simplified"] = simplified
-                st.session_state[f"{section}_overall"] = None
-                st.session_state[f"{section}_processed"] = simplified  # <-- what Key Definitions/Questions will use
-                st.markdown(f"**Simplified:** {simplified}")
-            else:
-            # do chunking
-                st.write("That was a lot of text, so we are using our intelligent chunking system! Hang on...")
-                overall, combined, parts = simplify_long_text_with_summary(source_text)
-                
-                # Store for later steps
-                st.session_state[f"{section}_simplified"] = combined
-                st.session_state[f"{section}_overall"] = overall
-                st.session_state[f"{section}_processed"] = combined  # <-- downstream source
+            st.session_state[f"{section}_processed"] = result["processed"]
+            st.session_state[f"{section}_simplified"] = result["simplified"]
+            st.session_state[f"{section}_overall"] = result["overall"]
 
-                st.markdown(f"**Overall Summary** {overall}") 
-                
+            if result["chunked"]:
+                st.write("That was a lot of text, so we used intelligent chunking.")
+                st.markdown(f"**Overall Summary** {result['overall']}")
                 st.download_button(
                     label="Export All Simplified Chunks (PDF)",
-                    data=data_for_pdf(st.session_state[f"{section}_simplified"]),
+                    data=data_for_pdf(result["simplified"]),
                     file_name="simplified.pdf",
                     mime="application/pdf",
                 )
-                
-                st.markdown(" ") 
-                # st.markdown(f"**Simplified (All Chunks):** {combined}") 
+            else:
+                st.markdown(f"**Simplified:** {result['simplified']}")
                 
 
     if middle.button("Key defintions", icon="🔍", use_container_width=True, key=(section + "2")):
