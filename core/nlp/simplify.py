@@ -7,12 +7,6 @@ load_dotenv()
 
 client = OpenAI()
 
-def validate_length(user_input, max_words):
-    if len(user_input.split()) > max_words:
-        return ' '.join(user_input.split()[:max_words])
-    else: 
-        return user_input
-
 def simplify_text(input_text):
     try:
         response = client.chat.completions.create(
