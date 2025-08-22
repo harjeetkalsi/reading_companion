@@ -23,7 +23,7 @@ def test_simplify_text_uses_client_injection(monkeypatch):
     set_client(DummyClient())  # inject fake
     from core.nlp.simplify import simplify_text
     out = simplify_text("Hello world")
-    assert "FAKE-RESPONSE" in out
+    assert "DUMMY" in out
     
 # explain_terms 
 
