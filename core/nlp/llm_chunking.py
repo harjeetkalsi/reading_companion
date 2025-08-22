@@ -4,6 +4,7 @@ import tiktoken
 from openai import OpenAI
 from dotenv import load_dotenv
 from core.nlp.simplify import simplify_text
+from core.nlp.openai_client import get_client
 
 
 MODEL = "gpt-3.5-turbo"
@@ -13,8 +14,6 @@ OUTPUT_TOKENS_PER_CHUNK = 400  # cap responses
 FINAL_SUMMARY_TOKENS = 1500     # cap final summary length
 
 load_dotenv()
-
-client = OpenAI()
 
 
 def enc(model: str):
@@ -96,6 +95,8 @@ def chunk_by_tokens_with_sentence_bounds(
 
 
 def simplify_chunk(chunk_text: str, audience: str = "10-year-old") -> str:
+
+    client = get_client()
     """Simplify a single chunk."""
     sys = (
         "You simplify/rewrite academic or technical text into clear, simpler, plain English while keeping key facts. "

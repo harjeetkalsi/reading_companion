@@ -2,12 +2,14 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+from core.nlp.openai_client import get_client
+
 
 load_dotenv()
 
-client = OpenAI()
 
-def simplify_text(input_text):
+def simplify_text(input_text: str) -> str:
+    client = get_client()
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
