@@ -1,4 +1,3 @@
-from openai import OpenAI
 from dotenv import load_dotenv
 from core.nlp.openai_client import get_client
 

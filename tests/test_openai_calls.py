@@ -4,7 +4,6 @@ import core.nlp.simplify as sim_mod
 from core.nlp.openai_client import set_client
 
 import types
-import pytest 
 
 class DummyChoice:
     def __init__(self, content): self.message = types.SimpleNamespace(content=content)

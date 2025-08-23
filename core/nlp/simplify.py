@@ -1,4 +1,3 @@
-from openai import OpenAI
 from dotenv import load_dotenv
 from urllib.request import urlopen
 from bs4 import BeautifulSoup

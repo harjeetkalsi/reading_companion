@@ -1,7 +1,6 @@
 import re
 from typing import List, Tuple
 import tiktoken
-from openai import OpenAI
 from dotenv import load_dotenv
 from core.nlp.simplify import simplify_text
 from core.nlp.openai_client import get_client
