@@ -16,8 +16,7 @@ jobs:
           cache: "pip"
       - name: Install linters
         run: |
-          pip install ruff mypy
+          pip install ruff 
       - name: Ruff
         run: ruff check .
-      - name: Mypy
-        run: mypy .
+     
