@@ -1,6 +1,4 @@
 from dotenv import load_dotenv
-from urllib.request import urlopen
-from bs4 import BeautifulSoup
 from core.nlp.openai_client import get_client
 
 

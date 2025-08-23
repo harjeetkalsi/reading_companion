@@ -44,7 +44,8 @@ def test_explain_terms_happy_path(monkeypatch):
     assert "Term1" in out
 
 def test_explain_terms_error_is_caught(monkeypatch):
-    class Boom(Exception): pass
+    class Boom(Exception): 
+        pass
     class ErrorCompletions(DummyCompletions):
         def create(self, *a, **k): raise Boom("API down")
     class ErrorChat(DummyChat):

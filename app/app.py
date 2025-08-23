@@ -1,21 +1,21 @@
-import os, sys
-import sys, pathlib
-ROOT = pathlib.Path(__file__).resolve().parents[1]  # folder that contains "app" and "core"
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+import sys
+import pathlib
+
 import streamlit as st
 from core.nlp.simplify import simplify_text
 from core.scraping.text_from_url import extract_main_text
 from core.nlp.explain_terms import explain_terms
 from core.nlp.question_gen import question_gen, question_answers
 from core.data.example_text import example_text
-from urlextract import URLExtract
 import fitz  
 from st_social_media_links import SocialMediaIcons
 from core.nlp.llm_chunking import token_count, simplify_long_text_with_summary
 from core.utils.pdf_gen import data_for_pdf
 from app.controllers import decide_source_text, simplify_flow
 
+ROOT = pathlib.Path(__file__).resolve().parents[1]  # folder that contains "app" and "core"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 st.set_page_config(layout="centered")
 
