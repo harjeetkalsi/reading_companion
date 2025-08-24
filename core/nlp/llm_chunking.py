@@ -2,8 +2,8 @@ import re
 from typing import List, Tuple
 import tiktoken
 from dotenv import load_dotenv
-from core.nlp.simplify import simplify_text
-from core.nlp.openai_client import get_client
+from .simplify import simplify_text
+from .openai_client import get_client
 
 
 MODEL = "gpt-3.5-turbo"

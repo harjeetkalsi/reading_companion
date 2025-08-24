@@ -2,21 +2,21 @@ import sys
 import pathlib
 
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]  # folder that contains "app" and "core"
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+# ROOT = pathlib.Path(__file__).resolve().parents[1]  # folder that contains "app" and "core"
+# if str(ROOT) not in sys.path:
+#     sys.path.insert(0, str(ROOT))
 
 import streamlit as st
-from core.nlp.simplify import simplify_text
-from core.scraping.text_from_url import extract_main_text
-from core.nlp.explain_terms import explain_terms
-from core.nlp.question_gen import question_gen, question_answers
-from core.data.example_text import example_text
+from reading_companion.core.nlp.simplify import simplify_text
+from reading_companion.core.scraping.text_from_url import extract_main_text
+from reading_companion.core.nlp.explain_terms import explain_terms
+from reading_companion.core.nlp.question_gen import question_gen, question_answers
+from reading_companion.core.data.example_text import example_text
 import fitz  
 from st_social_media_links import SocialMediaIcons
-from core.nlp.llm_chunking import token_count, simplify_long_text_with_summary
-from core.utils.pdf_gen import data_for_pdf
-from app.controllers import decide_source_text, simplify_flow
+from reading_companion.core.nlp.llm_chunking import token_count, simplify_long_text_with_summary
+from reading_companion.core.utils.pdf_gen import data_for_pdf
+from reading_companion.app.controllers import decide_source_text, simplify_flow
 
 st.set_page_config(layout="centered")
 
@@ -45,7 +45,7 @@ With this tool you can provide any article or journal extract, and it will:
 Whether you're a student, curious learner, or just tired of misinformation, the Reading Companion helps you understand research!
 """)
 
-st.image("app/imgs/new_cover_image.png")
+st.image("reading_companion/app/imgs/new_cover_image.png")
 
 # Tools
 def display_tools(user_input, section): 

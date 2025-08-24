@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from core.nlp.openai_client import get_client
+from .openai_client import get_client
 
 
 load_dotenv()

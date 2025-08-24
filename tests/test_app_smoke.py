@@ -19,7 +19,7 @@ pytestmark = pytest.mark.skipif(
     not _HAS_ST_TESTING, reason="streamlit.testing.v1 not available"
 )
 
-APP_FILE = "app/app.py"
+APP_FILE = Path(__file__).resolve().parents[1] / "app" / "app.py"
 
 def test_app_renders_and_core_widgets_present():
     at = AppTest.from_file(APP_FILE).run()
