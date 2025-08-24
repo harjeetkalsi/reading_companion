@@ -8,7 +8,8 @@ on:
 
 env:
   PYTHONPATH: .
-  
+  RC_SKIP_IMAGES: "1"
+
 jobs:
   pytest:
     runs-on: ubuntu-latest
