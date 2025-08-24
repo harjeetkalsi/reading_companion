@@ -1,11 +1,3 @@
-import sys
-import pathlib
-
-
-# ROOT = pathlib.Path(__file__).resolve().parents[1]  # folder that contains "app" and "core"
-# if str(ROOT) not in sys.path:
-#     sys.path.insert(0, str(ROOT))
-
 import streamlit as st
 from reading_companion.core.nlp.simplify import simplify_text
 from reading_companion.core.scraping.text_from_url import extract_main_text
