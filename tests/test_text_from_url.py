@@ -1,6 +1,3 @@
-import types 
-import pytest 
-
 import core.scraping.text_from_url as tfu
 
 ## _clean_text

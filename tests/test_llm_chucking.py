@@ -85,7 +85,6 @@ def test_chunking_respects_budget_and_overlap():
     assert second_chunk_sents[:2] == overlap_expected
 
 ##simplify_chunk (mock OpenAI)
-
 def test_simplify_chunk_calls_openai(monkeypatch):
     # Build a dummy response object like OpenAI returns
     class DummyChoice:
@@ -96,19 +95,29 @@ def test_simplify_chunk_calls_openai(monkeypatch):
         def __init__(self, content):
             self.choices = [DummyChoice(content)]
 
-    def fake_create(*args, **kwargs):
-        # Basic sanity checks on the prompt shape
-        assert kwargs["model"] == lc.MODEL
-        assert any(m["role"] == "system" for m in kwargs["messages"])
-        assert any("Simplify the following text" in m["content"] for m in kwargs["messages"] if m["role"] == "user")
-        return DummyResp("Simplified chunk output")
+    class DummyCompletions:
+        def create(self, **kwargs):
+            # Basic sanity checks on the prompt shape
+            assert kwargs["model"] == lc.MODEL
+            msgs = kwargs["messages"]
+            assert any(m["role"] == "system" for m in msgs)
+            assert any("Simplify the following text" in m["content"]
+                       for m in msgs if m["role"] == "user")
+            return DummyResp("Simplified chunk output")
 
-    # Patch the OpenAI client used in the module
-    monkeypatch.setattr(lc.client.chat.completions, "create", fake_create)
+    class DummyChat:
+        def __init__(self):
+            self.completions = DummyCompletions()
+
+    class DummyClient:
+        def __init__(self):
+            self.chat = DummyChat()
+
+    # Patch the module's get_client to return our dummy
+    monkeypatch.setattr(lc, "get_client", lambda: DummyClient())
 
     out = lc.simplify_chunk("Original text about vitamin D.", audience="10-year-old")
     assert "Simplified chunk output" in out
-
 
 ## reduce_summary (mock simplify_text it delegates to) ----------
 
