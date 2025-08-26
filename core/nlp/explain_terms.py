@@ -1,12 +1,11 @@
-from openai import OpenAI
 from dotenv import load_dotenv
+from .openai_client import get_client
 
 load_dotenv()
 
-client = OpenAI()
-
 
 def explain_terms(input_text):
+    client = get_client()
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
