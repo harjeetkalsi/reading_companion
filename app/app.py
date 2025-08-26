@@ -22,6 +22,7 @@ def _ensure_state(section: str):
     st.session_state.setdefault(f"{section}_overall", None)
     st.session_state.setdefault(f"{section}_questions", None)
     st.session_state.setdefault(f"{section}_answers", None)
+    st.session_state.setdefault(f"{section}_chunked", None)
     st.session_state.setdefault("uploaded_file", None)
 
 
@@ -86,7 +87,8 @@ def display_tools(user_input, section):
             st.session_state[f"{section}_processed"] = result["processed"]
             st.session_state[f"{section}_simplified"] = result["simplified"]
             st.session_state[f"{section}_overall"] = result["overall"]
-
+            st.session_state[f"{section}_chunked"] = result["chunked"]
+            
             if result["chunked"]:
                 st.write("That was a lot of text, so we used intelligent chunking.")
                 st.markdown(f"**Overall Summary** {result['overall']}")
@@ -102,7 +104,11 @@ def display_tools(user_input, section):
 
     if middle.button("Key defintions", icon="🔍", use_container_width=True, key=(section + "2")):
         with st.spinner("Finding key terms..."):
-            src = st.session_state.get(f"{section}_processed") or user_input
+            if st.session_state.get(f"{section}_chunked"):
+                src = st.session_state.get(f"{section}_processed")
+            else: 
+                src = user_input
+                
             if not src or not src.strip():
                 st.warning("Please run 📘 Reading Companion first, or paste text.")
             else:    
