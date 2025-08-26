@@ -1,4 +1,7 @@
+import os
 import streamlit as st
+from pathlib import Path
+
 from reading_companion.core.nlp.simplify import simplify_text
 from reading_companion.core.scraping.text_from_url import extract_main_text
 from reading_companion.core.nlp.explain_terms import explain_terms
@@ -21,6 +24,19 @@ def _ensure_state(section: str):
     st.session_state.setdefault(f"{section}_answers", None)
     st.session_state.setdefault("uploaded_file", None)
 
+
+def show_cover_image() -> None:
+    """Render cover image if present (and not disabled)."""
+    if os.getenv("RC_SKIP_IMAGES"):
+        return  # useful for CI
+
+    img_path = Path(__file__).parent / "imgs" / "new_cover_image.png"
+    if img_path.exists():
+        st.image(str(img_path))
+    else:
+        # Don’t crash the app if the file is missing in some envs
+        st.info("")  # or just pass    
+
 # Header / Site Introduction
 
 st.title(""" Reading Companion """)
@@ -37,7 +53,7 @@ With this tool you can provide any article or journal extract, and it will:
 Whether you're a student, curious learner, or just tired of misinformation, the Reading Companion helps you understand research!
 """)
 
-st.image("reading_companion/app/imgs/new_cover_image.png")
+show_cover_image()
 
 # Tools
 def display_tools(user_input, section): 
