@@ -29,11 +29,11 @@ def test_simplify_text_uses_client_injection(monkeypatch):
 def test_explain_terms_happy_path(monkeypatch):
     class VerifyCompletions(DummyCompletions):
         def create(self, **kwargs):
-            assert kwargs["model"] == "gpt-3.5-turbo"
+            assert kwargs["model"] == "gpt-5-nano"
             msgs = kwargs["messages"]
             assert msgs[0]["role"] == "system"
             assert "explain" in msgs[0]["content"].lower()
-            assert "Pick out the techincal words" in msgs[1]["content"]
+            assert "Pick out all the scientific words" in msgs[1]["content"]
             return DummyResp("Term1 — simple def\nTerm2 — simple def")
 
     class VerifyChat(DummyChat):
@@ -89,7 +89,6 @@ def test_question_answers_calls_api(monkeypatch):
 def test_simplify_text_calls_api(monkeypatch):
     class VerifyCompletions(DummyCompletions):
         def create(self, **k):
-            assert k["max_tokens"] == 400
             assert "Simplify the following text" in k["messages"][1]["content"]
             return DummyResp("Simplified output.")
     class VerifyChat(DummyChat):

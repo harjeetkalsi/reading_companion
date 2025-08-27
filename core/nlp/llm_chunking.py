@@ -6,7 +6,7 @@ from .simplify import simplify_text
 from .openai_client import get_client
 
 
-MODEL = "gpt-3.5-turbo"
+MODEL = "gpt-5-nano"
 CHUNK_TOKENS = 3000       # per-chunk input budget (prompt+chunk should fit model context)
 CHUNK_OVERLAP_SENTS = 2   # small sentence overlap to keep continuity
 OUTPUT_TOKENS_PER_CHUNK = 400  # cap responses
@@ -113,10 +113,7 @@ def simplify_chunk(chunk_text: str, audience: str = "10-year-old") -> str:
         messages=[
             {"role": "system", "content": sys},
             {"role": "user", "content": user},
-        ],
-        temperature=0.3,
-        max_tokens=OUTPUT_TOKENS_PER_CHUNK,
-    )
+        ])
     return resp.choices[0].message.content.strip()
 
 

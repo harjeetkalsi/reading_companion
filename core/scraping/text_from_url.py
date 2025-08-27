@@ -16,6 +16,7 @@ COOKIE_XPATHS = [
     "//button[contains(translate(., 'ALLOW', 'allow'), 'allow')]",
     "//button[contains(., 'I agree')]",
     "//button[contains(., 'Accept all')]",
+     "//button[contains(., 'Accept All')]",
     "//button[contains(., 'Accept cookies')]",
     "//button[@id='onetrust-accept-btn-handler']",
 ]
