@@ -28,28 +28,45 @@ def test_extract_main_text_trafilatura_none(monkeypatch):
 
 class FakeElement:
     def click(self): pass
+    def is_displayed(self):  # used by visibility_of_element_located
+        return True
 
 class FakeDriver:
-    """Minimal Selenium-like driver for tests."""
     def __init__(self, html, cookie_will_match_index=None):
         self._html = html
-        self._quit_called = False
         self._cookie_calls = 0
-        self._cookie_will_match_index = cookie_will_match_index  # which XPATH index should "exist"
+        self._cookie_will_match_index = cookie_will_match_index
+        self._quit_called = False
+        self._scrolled = False          # optional: track scroll
 
-    def get(self, url): pass
+    def get(self, url):
+        self._url = url
+
     @property
-    def page_source(self): return self._html
-    def quit(self): self._quit_called = True
+    def page_source(self):
+        return self._html
 
-    # Simulate find_element trying several COOKIE_XPATHS until one matches
     def find_element(self, by, xp):
+        # Satisfy WebDriverWait(... (By.TAG_NAME, "body"))
+        if by == tfu.By.TAG_NAME and xp == "body":
+            return FakeElement()
+
+        # Cookie buttons checked via XPATH
         assert by == tfu.By.XPATH
         idx = self._cookie_calls
         self._cookie_calls += 1
         if self._cookie_will_match_index is not None and idx == self._cookie_will_match_index:
             return FakeElement()
         raise Exception("not found")
+
+    def execute_script(self, script):
+        # Your extractor scrolls to trigger lazy loads; we just record it
+        self._scrolled = True
+        return None
+
+    def quit(self):
+        self._quit_called = True
+    
 
 def test_extract_main_text_selenium_happy_path(monkeypatch):
     # Prepare "page" html
@@ -142,4 +159,4 @@ def test_extract_main_text_both_fail_returns_message(monkeypatch):
     monkeypatch.setattr(tfu, "extract_main_text_trafilatura", lambda url: None)
     monkeypatch.setattr(tfu, "extract_main_text_selenium", lambda url: None)
     out = tfu.extract_main_text("http://example.com")
-    assert "couldn't extract readable" in out.lower()      
+    assert "text could not be extracted" in out.lower()      
