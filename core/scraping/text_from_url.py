@@ -5,6 +5,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from bs4 import BeautifulSoup
 from readability import Document
@@ -35,11 +37,30 @@ def extract_main_text_trafilatura(url: str) -> str | None:
     
     return _clean_text(text or "") or None
 
+def looks_like_bot_check(text: str) -> bool:
+    needles = [
+        "checking your browser", 
+        "verifying you are a human", 
+        "before we continue", 
+        "automated requests", 
+        "just a moment...",
+        "verifying your connection"
+    ]
+    t = text.lower()
+    return any(n in t for n in needles)
+
+
 def extract_main_text_selenium(url: str, headless: bool = True, wait: float = 2.0) -> str | None:
     service = Service()
     options = webdriver.ChromeOptions()
     if headless:
         options.add_argument("--headless=new")
+
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/123.0.0.0 Safari/537.36"
+    )    
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--window-size=1280,1024")
@@ -48,8 +69,18 @@ def extract_main_text_selenium(url: str, headless: bool = True, wait: float = 2.
 
     try:
         driver.get(url)
-        time.sleep(wait)
+        
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.TAG_NAME, "body"))
+        )
 
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight/3);")
+        time.sleep(1)
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight*2/3);")
+        time.sleep(1)
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+        
         # Try clicking a cookie/consent button
         for xp in COOKIE_XPATHS:
             try:
@@ -90,8 +121,7 @@ def extract_main_text(url: str) -> str:
 
     # Fallback
     text = extract_main_text_selenium(url)
-    if text:
-        print("selenium")
+    if not text or looks_like_bot_check(text):
+        return "Sorry — this site is blocking automated access, text could not be extracted. Try uploading a PDF of the article, or paste text."
+    else:
         return text
-
-    return "Sorry — I couldn't extract readable article text from that link."

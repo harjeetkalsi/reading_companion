@@ -11,7 +11,7 @@ def question_gen(input_text):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a teacher that checks a student's understanding of academic text."},
-                {"role": "user", "content": f"Generate 3 comprehension questions based on the text for a 14 year old learner:\n\n{input_text}"}
+                {"role": "user", "content": f"Generate 3 comprehension questions based on the text for a 14 year old learner (dont mention the age of the target auidence in your respons):\n\n{input_text}"}
             ],
             temperature=0.7,
             max_tokens=400
@@ -27,7 +27,7 @@ def question_answers(input_text):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a teacher that checks a student's understanding of academic text."},
-                {"role": "user", "content": f"You gave the students the 3 questions provided, now give them the answers in language that a 10 year old would understand :\n\n{input_text}"}
+                {"role": "user", "content": f"You gave the students the 3 questions provided, now give them the answers in language that a 10 year old would understand (don't mention the age of the target audience in your response) :\n\n{input_text}"}
             ],
             temperature=0.7,
             max_tokens=400
