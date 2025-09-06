@@ -25,8 +25,11 @@ ENV STREAMLIT_SERVER_PORT=8501
 # Expose port
 EXPOSE 8501
 
-# Healthcheck (optional)
-HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:8501/_stcore/health || exit 1
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -fsS http://localhost:8501/healthz || exit 1
 
 # Run the app
 CMD ["streamlit", "run", "reading_companion/app/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+
+# (optional) simpler healthcheck
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -fsS http://localhost:8501/healthz || exit 1
