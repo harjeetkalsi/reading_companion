@@ -1,0 +1,35 @@
+{
+  "family": "reading-companion-td",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::117676877867:role/reading-companion-task-exec-role",
+  "taskRoleArn": "arn:aws:iam::117676877867:role/reading-companion-task-exec-role",
+  "containerDefinitions": [{
+    "name": "reading-companion",
+    "image": "117676877867.dkr.ecr.eu-west-2.amazonaws.com/reading-companion:latest",
+    "portMappings": [{
+      "containerPort": 8501,
+      "protocol": "tcp"
+    }],
+    "essential": true,
+    "environment": [
+      { "name": "STREAMLIT_SERVER_PORT", "value": "8501" }
+    ],
+    "secrets": [
+      {
+        "name": "OPENAI_API_KEY",
+        "valueFrom": "arn:aws:secretsmanager:eu-west-2:117676877867:secret:reading-companion/OPENAI_API_KEY"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/reading-companion",
+        "awslogs-region": "eu-west-2",
+        "awslogs-stream-prefix": "ecs"
+      }
+    }
+  }]
+}
