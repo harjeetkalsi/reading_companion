@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-# System deps (for headless Chromium/Selenium friendliness & certs)
+# System deps (headless-friendly & certs)
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
      build-essential curl ca-certificates \
@@ -15,25 +15,26 @@ RUN apt-get update \
      libxcursor1 libxdamage1 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 \
   && rm -rf /var/lib/apt/lists/*
 
-# Project root inside the container
+# Workdir for the image
 WORKDIR /opt/app
 
-# Layer-cached deps first
+# Install deps first (layer-cached)
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Copy the entire repo into /opt/app (so /opt/app/reading_companion/... exists)
-COPY . .
+# Copy the entire repo -> /opt/app/reading_companion
+# (so /opt/app/reading_companion/app/app.py exists)
+COPY . /opt/app/reading_companion
 
-# Make imports like `from reading_companion.core...` work
+# Make 'reading_companion' importable
 ENV PYTHONPATH=/opt/app
 
-# Streamlit config
+# Streamlit settings
 ENV STREAMLIT_SERVER_HEADLESS=true
 ENV STREAMLIT_SERVER_ENABLECORS=false
 ENV STREAMLIT_SERVER_PORT=8501
 
 EXPOSE 8501
 
-# Run exactly like you do locally (module path relative to repo root)
+# Run exactly like you do locally (module path)
 CMD ["python", "-m", "streamlit", "run", "reading_companion/app/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
