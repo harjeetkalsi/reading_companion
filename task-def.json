@@ -8,7 +8,7 @@
   "taskRoleArn": "arn:aws:iam::117676877867:role/reading-companion-task-exec-role",
   "containerDefinitions": [{
     "name": "reading-companion",
-    "image": "117676877867.dkr.ecr.eu-west-2.amazonaws.com/reading-companion:latest",
+    "image": "117676877867.dkr.ecr.eu-west-2.amazonaws.com/reading-companion:v2-20250917-1552",
     "portMappings": [{
       "containerPort": 8501,
       "protocol": "tcp"

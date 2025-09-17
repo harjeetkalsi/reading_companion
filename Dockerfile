@@ -37,4 +37,4 @@ ENV STREAMLIT_SERVER_PORT=8501
 EXPOSE 8501
 
 # Run exactly like you do locally (module path)
-CMD ["python", "-m", "streamlit", "run", "reading_companion/app/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+CMD ["python", "-m", "streamlit", "run", "/opt/app/reading_companion/app/app.py", "--server.address=0.0.0.0", "--server.port=8501"]
