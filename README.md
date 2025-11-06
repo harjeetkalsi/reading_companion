@@ -1,6 +1,6 @@
 # 📘 Reading Companion
 
-See the live demo here: http://18.134.182.96:8501/
+See the live demo here: http://readingcompanion-402223167.eu-west-2.elb.amazonaws.com/
 
 The **Reading Companion** is a tool designed to make research articles, journals, and technical texts easier to understand. Whether you're a student, curious learner, or just tired of fake news, this app helps you break through the jargon.
 
