@@ -45,7 +45,7 @@ st.title(""" Reading Companion """)
 st.write(""" Journals and research articles are brilliant tools for learning and staying informed, but they’re often written in academic language that’s hard to digest. The Reading Companion helps you break through the jargon.
 With this tool you can provide any article or journal extract, and it will:
 
-• Simplify the text into easy-to-read language
+• Simplify the text into easier to read language
          
 • Explain key words and terminology
          
