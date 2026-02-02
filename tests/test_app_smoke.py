@@ -16,6 +16,8 @@ pytestmark = pytest.mark.skipif(
 
 APP_FILE = Path(__file__).resolve().parents[1] / "reading_companion" / "app" / "app.py"
 
+assert APP_FILE.exists(), f"App file not found at {APP_FILE}"
+
 def test_app_renders_and_core_widgets_present():
     at = AppTest.from_file(APP_FILE).run()
     titles = [el for el in at.get("title")]
