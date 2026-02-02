@@ -1,5 +1,4 @@
 # tests/test_app_smoke.py
-import sys
 from pathlib import Path
 import pytest
 
