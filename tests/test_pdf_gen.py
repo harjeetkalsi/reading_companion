@@ -1,5 +1,5 @@
 import re
-import core.utils.pdf_gen as pdf_gen
+import reading_companion.core.utils.pdf_gen as pdf_gen
 
 def _is_pdf(pdf: bytes) -> bool:
     # Minimal sanity checks for a PDF byte stream

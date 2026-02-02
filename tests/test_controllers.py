@@ -1,4 +1,4 @@
-import app.controllers as c
+import reading_companion.app.controllers as c
 
 def test_decide_source_text_uses_uploaded():
     src, warn = c.decide_source_text(
