@@ -1,7 +1,7 @@
-import core.nlp.explain_terms as et_mod
-import core.nlp.question_gen as qg_mod
-import core.nlp.simplify as sim_mod
-from core.nlp.openai_client import set_client
+import reading_companion.core.nlp.explain_terms as et_mod
+import reading_companion.core.nlp.question_gen as qg_mod
+import reading_companion.core.nlp.simplify as sim_mod
+from reading_companion.core.nlp.openai_client import set_client
 
 import types
 
@@ -20,7 +20,7 @@ class DummyClient:
 
 def test_simplify_text_uses_client_injection(monkeypatch):
     set_client(DummyClient())  # inject fake
-    from core.nlp.simplify import simplify_text
+    from reading_companion.core.nlp.simplify import simplify_text
     out = simplify_text("Hello world")
     assert "DUMMY" in out
     

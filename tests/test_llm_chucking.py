@@ -1,6 +1,6 @@
 import pytest 
 import types
-import core.nlp.llm_chunking as lc
+import reading_companion.core.nlp.llm_chunking as lc
 
 
 ##helpers

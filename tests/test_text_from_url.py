@@ -1,4 +1,4 @@
-import core.scraping.text_from_url as tfu
+import reading_companion.core.scraping.text_from_url as tfu
 
 ## _clean_text
 

@@ -1,12 +1,7 @@
 # tests/test_app_smoke.py
-import sys
 from pathlib import Path
 import pytest
 
-# Ensure project root (that contains "app/" and "core/") is importable
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 # Guard for Streamlit testing API availability
 try:
@@ -19,7 +14,9 @@ pytestmark = pytest.mark.skipif(
     not _HAS_ST_TESTING, reason="streamlit.testing.v1 not available"
 )
 
-APP_FILE = Path(__file__).resolve().parents[1] / "app" / "app.py"
+APP_FILE = Path(__file__).resolve().parents[1] / "reading_companion" / "app" / "app.py"
+
+assert APP_FILE.exists(), f"App file not found at {APP_FILE}"
 
 def test_app_renders_and_core_widgets_present():
     at = AppTest.from_file(APP_FILE).run()
