@@ -25,6 +25,38 @@ The app is powered by **ChatGPT** but with extra processing steps to ensure accu
 3. **Better Accuracy**  
    By combining **text extraction** and **chunking**, the Reading Companion delivers more reliable and detailed simplifications than sending a raw link or giant block of text directly to ChatGPT.
 
+## System Architecture
+
+```mermaid
+flowchart TD
+    A[User URL / Text Input]
+    B[Content Ingestion<br>Web Scraper / Text Loader]
+    C[Text Processing<br>Chunking + Overlap]
+    D[LLM Processing<br>OpenAI API]
+    E[Aggregation Layer<br>Combine Simplified Chunks]
+    F[Output Generator<br>Summary + Definitions + Quiz]
+    G[Streamlit UI]
+
+    A --> B --> C --> D --> E --> F --> G
+```
+
+
+### Pipeline Overview
+
+1. The user provides a URL or block of text.
+
+2. The ingestion layer retrieves and cleans the document content.
+
+3. The document is chunked with overlapping sentences to preserve context.
+
+4. Each chunk is processed through an LLM API to generate simplified explanations.
+
+5. The processed chunks are aggregated into a final summary.
+
+6. A comprehension quiz and key definitions are generated from the summarised content.
+
+7. The output is presented through a Streamlit interface.
+
 ## 🛠️ Tech Stack
 - [Streamlit](https://streamlit.io/) – for the web app interface  
 - [OpenAI GPT](https://platform.openai.com/) – for simplification, definitions, and summaries  
