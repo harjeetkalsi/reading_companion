@@ -35,7 +35,7 @@ flowchart TD
     D[LLM Processing<br>OpenAI API]
     E[Aggregation Layer<br>Combine Simplified Chunks]
     F[Output Generator<br>Summary + Definitions + Quiz]
-    G[Streamlit UI]
+    G[User Interacts with Output Via Streamlit UI]
 
     A --> B --> C --> D --> E --> F --> G
 ```
